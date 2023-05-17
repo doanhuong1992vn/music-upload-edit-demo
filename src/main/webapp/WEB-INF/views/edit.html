@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Upload Application</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<form th:action="@{update}" method="post"
+      th:object="${musicForm}" enctype="multipart/form-data">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Property</th>
+            <th scope="col" th:text="${message}" style="color: coral"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">ID</th>
+            <td><input type="number" th:field="*{id}" readonly></td>
+        </tr>
+        <tr>
+            <th scope="row">Name of the song</th>
+            <td><input type="text" th:field="*{name}" required></td>
+        </tr>
+        <tr>
+            <th scope="row">Singer</th>
+            <td><input type="text" th:field="*{singer}" required></td>
+        </tr>
+        <tr>
+            <th scope="row">Genre music</th>
+            <td>
+                <th:block th:each="type : ${musicGenres}">
+                    <input type="radio" th:value="${type}" th:field="*{genre}" required th:default="*{genre}">
+                    <label th:for="${#ids.prev('genre')}" th:text="${type}"></label>
+                </th:block>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">Audio</th>
+            <td>
+                <input type="file" th:field="*{url}" accept="audio/ogg, audio/mp3, audio/m4p, audio/wav" required>
+                <input hidden="hidden" id="fileName" th:value="${musicForm.url.originalFilename}">
+                <input hidden="hidden" id="blob" th:value="${musicForm.url.bytes}">
+                <input hidden="hidden" id="contentType" th:value="${musicForm.url.contentType}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button"><a th:href="@{/}">Home Page</a></button>
+            </td>
+            <td>
+                <button type="submit">Update</button>
+            </td>
+            <td>
+                <button type="button"><a th:href="@{/delete/{id}(id = ${musicForm.id})}">Delete</a></button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+<script>
+    function getFile() {
+        //https://stackoverflow.com/questions/1696877/how-to-set-a-value-to-a-file-input-in-html
+        // Get a reference to our file input
+        const fileInput = document.querySelector("#url");
+        const blob = document.querySelector("#blob").value;
+        const fileName = document.querySelector("#fileName").value;
+        const contentType = document.querySelector("#contentType").value;
+        // Create a new File object
+        const myFile = new File(
+            [blob],
+            fileName,
+            {
+                type: contentType,
+                lastModified: new Date(),
+            }
+        );
+        // Now let's create a DataTransfer to get a FileList
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(myFile);
+        fileInput.files = dataTransfer.files;
+    }
+    document.onload = getFile();
+</script>
+</body>
+</html>

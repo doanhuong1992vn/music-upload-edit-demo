@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Upload Application</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<h3>Music Upload Application</h3>
+<button><a th:href="@{create}">Add new music</a></button>
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">STT</th>
+        <th scope="col">ID</th>
+        <th scope="col">NAME OF THE SONG</th>
+        <th scope="col">SINGER</th>
+        <th scope="col">GENRE MUSIC</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody th:each="song, state : ${musicList}">
+    <tr>
+        <th scope="row" th:text="${state.count}"></th>
+        <td th:text="${song.id}"></td>
+        <td th:text="${song.name}"></td>
+        <td th:text="${song.singer}"></td>
+        <td th:text="${song.genre}"></td>
+        <td>
+            <audio controls>
+                <source th:src="@{'/music/' + ${song.url}}" th:alt="${song.name}" type="audio/mp3" src="">
+            </audio>
+        </td>
+        <td>
+            <button><a th:href="@{/edit/{id}(id = ${song.id})}">EDIT</a></button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
